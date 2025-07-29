@@ -106,7 +106,7 @@ let d = useMemo(()=>{
           <ul>
             {d.map(v => {
 
-              return <li key={v.id}><strong>{v.title}</strong>
+              return <li key={v.id}><h4>{v.title}</h4>
                 <p>{v.body}</p>
 
               </li>
