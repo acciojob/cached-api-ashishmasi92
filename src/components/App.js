@@ -4,13 +4,18 @@ import "regenerator-runtime"
 
 async function fetchData(userid) {
 
-  let res = await  fetch(`https://jsonplaceholder.typicode.com/posts?userId=${userid}`)
+  let res = await fetch(`https://jsonplaceholder.typicode.com/posts?userId=${userid}`)
 
   if (!res.ok) {
     throw new Error("failed to fetch data")
   }
+  let data = res.json()
 
-  return res.json()
+  return data
+
+
+
+
 
 }
 
@@ -20,42 +25,72 @@ const App = () => {
   const [rawData, setRawData] = useState(null);
 
 
-  useEffect(() => {
 
-    const fetchData2 = async () => {
-
-      if (userId == "") {
-        return
-      }
-
-      setLoading(true)
-      try {
-        let dt = await fetchData(userId)
-        setRawData(dt)
-
-      } catch (error) {
-        console.log(error.message);
-
-      }
-      finally {
-        setLoading(false)
-      }
+  
 
 
-    }
 
-    fetchData2()
+useEffect(()=>{
 
-  }, [userId])
+setLoading(true)
+  fetchData(userId)
+  .then((res)=>{
+    setLoading(false)
+    setRawData(res)
+  })
+
+},[userId])
 
 
-  let memo = useMemo(() => {
 
-    if (rawData !== null) {
-      return [...rawData]
-    }
 
-  }, [rawData])
+let d = useMemo(()=>{
+
+  if(rawData !=null){
+    return [...rawData]
+  }
+
+
+},[rawData])
+
+
+
+  // useEffect(() => {
+
+  //   const fetchData2 = async () => {
+
+  //     if (userId == "") {
+  //       return
+  //     }
+
+  //     setLoading(true)
+  //     try {
+  //       let dt = await fetchData(userId)
+  //       setRawData(dt)
+
+  //     } catch (error) {
+  //       console.log(error.message);
+
+  //     }
+  //     finally {
+  //       setLoading(false)
+  //     }
+
+
+  //   }
+
+  //   fetchData2()
+
+  // }, [userId])
+
+
+  // let memo = useMemo(() => {
+
+  //   if (rawData !== null) {
+  //     return [...rawData]
+  //   }
+
+  // }, [rawData])
 
 
   return (
@@ -66,25 +101,25 @@ const App = () => {
           setUserId(e.target.value)
         }} />
 
-        {loading && <p>loading----</p>}
-        {!loading && memo?.length > 0 && (
+        {loading && <p>Loading...</p>}
+        {!loading && d?.length > 0 && (
           <ul>
-            {memo.map(v => {
+            {d.map(v => {
 
               return <li key={v.id}><strong>{v.title}</strong>
-              <p>{v.body}</p>
+                <p>{v.body}</p>
 
               </li>
             })}
           </ul>
-        )
+)}
 
 
 
 
-        }
 
-{!loading && userId && memo?.length==0&& <p>no data found</p>}
+
+        {!loading && userId && d?.length == 0 && <p>no data found</p>}
       </div>
 
     </>
